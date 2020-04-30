@@ -1,3 +1,4 @@
+import logging
 from urllib.parse import urlparse
 
 from django.urls import resolve as url_resolve
@@ -5,6 +6,8 @@ from django.test.client import RequestFactory
 
 from readthedocs.proxito.middleware import map_host_to_project_slug
 from readthedocs.proxito.views.utils import _get_project_data_from_request
+
+log = logging.getLogger(__name__)
 
 
 def unresolve(uri):
@@ -38,4 +41,5 @@ def unresolve(uri):
         version_slug=kwargs.get('version_slug'),
         filename=kwargs.get('filename', ''),
     )
-    return (final_project, lang_slug, version_slug, filename)
+    log.info('Unresolved: %s', locals())
+    return (final_project, lang_slug, version_slug, filename, parsed.fragment)
