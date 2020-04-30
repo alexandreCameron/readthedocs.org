@@ -101,6 +101,11 @@ hoverxref_role_types = {
     'confval': 'tooltip',  # for custom object
 }
 
+hoverxref_project = 'docs'
+hoverxref_version = 'latest'
+hoverxref_api_host = 'http://community.dev.readthedocs.io'
+
+
 
 # Activate autosectionlabel plugin
 autosectionlabel_prefix_document = True

@@ -136,3 +136,6 @@ class DockerBaseSettings(CommunityDevSettings):
     # Remove the checks on the number of fields being submitted
     # This limit is mostly hit on large forms in the Django admin
     DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
+    USE_PROMOS = False
+    CORS_ORIGIN_ALLOW_ALL = True
