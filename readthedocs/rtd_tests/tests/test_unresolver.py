@@ -71,7 +71,7 @@ class UnResolverTests(ResolverBase):
         ver = self.pip.versions.first()
         ver.type = 'external'
         ver.slug = '10'
-        parts = unresolve('http://project--10.dev.readthedocs.build/en/10/')
+        parts = unresolve('http://pip--10.dev.readthedocs.build/en/10/')
         self.assertEqual(parts[0].slug, 'pip')
         self.assertEqual(parts[1], 'en')
         self.assertEqual(parts[2], '10')
