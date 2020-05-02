@@ -16,11 +16,12 @@ from readthedocs.projects.models import Domain
 class UnResolverTests(ResolverBase):
 
     def test_unresolver(self):
-        parts = unresolve('http://pip.readthedocs.io/en/latest/foo.html')
+        parts = unresolve('http://pip.readthedocs.io/en/latest/foo.html#fragment')
         self.assertEqual(parts[0].slug, 'pip')
         self.assertEqual(parts[1], 'en')
         self.assertEqual(parts[2], 'latest')
         self.assertEqual(parts[3], 'foo.html')
+        self.assertEqual(parts[4], 'fragment')
 
     def test_unresolver_subproject(self):
         parts = unresolve('http://pip.readthedocs.io/projects/sub/ja/latest/foo.html')
@@ -76,3 +77,10 @@ class UnResolverTests(ResolverBase):
         self.assertEqual(parts[1], 'en')
         self.assertEqual(parts[2], '10')
         self.assertEqual(parts[3], '')
+
+    def test_unresolver_unknown_host(self):
+        parts = unresolve('http://random.stuff.com/en/latest/')
+        self.assertEqual(parts[0], None)
+        self.assertEqual(parts[1], None)
+        self.assertEqual(parts[2], None)
+        self.assertEqual(parts[3], None)

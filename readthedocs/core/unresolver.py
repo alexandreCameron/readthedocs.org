@@ -16,7 +16,7 @@ def unresolve(uri):
     Turn a URL into the component parts that our views would use to process them.
 
     This is useful for lots of places,
-    like where we want to figure out exactly what file a URL maps to
+    like where we want to figure out exactly what file a URL maps to.
     """
     parsed = urlparse(uri)
     domain = parsed.netloc.split(':', 1)[0]
@@ -24,6 +24,10 @@ def unresolve(uri):
 
     request = RequestFactory().get(path=path, HTTP_HOST=domain)
     project_slug = request.host_project_slug = map_host_to_project_slug(request)
+
+    # Handle returning a response
+    if hasattr(project_slug, 'status_code'):
+        return (None, None, None, None, None)
 
     _, __, kwargs = url_resolve(
         path,
