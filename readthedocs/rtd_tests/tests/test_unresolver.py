@@ -1,5 +1,6 @@
 from django.test import override_settings
 import django_dynamic_fixture as fixture
+import pytest
 
 from readthedocs.rtd_tests.tests.test_resolver import ResolverBase
 from readthedocs.core.unresolver import unresolve
@@ -7,12 +8,10 @@ from readthedocs.projects.models import Domain
 
 
 @override_settings(
-    PRODUCTION_DOMAIN='readthedocs.org',
     PUBLIC_DOMAIN='readthedocs.io',
     RTD_EXTERNAL_VERSION_DOMAIN='dev.readthedocs.build',
-    PUBLIC_DOMAIN_USES_HTTPS=True,
-    USE_SUBDOMAIN=True,
 )
+@pytest.mark.proxito
 class UnResolverTests(ResolverBase):
 
     def test_unresolver(self):
