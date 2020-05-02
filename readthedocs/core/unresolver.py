@@ -1,5 +1,6 @@
 import logging
 from urllib.parse import urlparse
+from collections import namedtuple
 
 from django.urls import resolve as url_resolve
 from django.test.client import RequestFactory
@@ -9,6 +10,8 @@ from readthedocs.proxito.views.utils import _get_project_data_from_request
 from readthedocs.proxito.views.mixins import ServeDocsMixin
 
 log = logging.getLogger(__name__)
+
+Unresolved = namedtuple('Unresolved', 'project, language_slug, version_slug, filename, fragment')
 
 
 def unresolve(uri):
@@ -27,7 +30,7 @@ def unresolve(uri):
 
     # Handle returning a response
     if hasattr(project_slug, 'status_code'):
-        return (None, None, None, None, None)
+        return Unresolved(None, None, None, None, None)
 
     _, __, kwargs = url_resolve(
         path,
@@ -45,5 +48,6 @@ def unresolve(uri):
         version_slug=version_slug,
         filename=kwargs.get('filename', ''),
     )
+
     log.info('Unresolved: %s', locals())
-    return (final_project, lang_slug, version_slug, filename, parsed.fragment)
+    return Unresolved(final_project, lang_slug, version_slug, filename, parsed.fragment)

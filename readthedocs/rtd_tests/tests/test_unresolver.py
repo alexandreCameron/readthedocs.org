@@ -17,25 +17,25 @@ class UnResolverTests(ResolverBase):
 
     def test_unresolver(self):
         parts = unresolve('http://pip.readthedocs.io/en/latest/foo.html#fragment')
-        self.assertEqual(parts[0].slug, 'pip')
-        self.assertEqual(parts[1], 'en')
-        self.assertEqual(parts[2], 'latest')
-        self.assertEqual(parts[3], 'foo.html')
-        self.assertEqual(parts[4], 'fragment')
+        self.assertEqual(parts.project.slug, 'pip')
+        self.assertEqual(parts.language_slug, 'en')
+        self.assertEqual(parts.version_slug, 'latest')
+        self.assertEqual(parts.filename, 'foo.html')
+        self.assertEqual(parts.fragment, 'fragment')
 
     def test_unresolver_subproject(self):
         parts = unresolve('http://pip.readthedocs.io/projects/sub/ja/latest/foo.html')
-        self.assertEqual(parts[0].slug, 'sub')
-        self.assertEqual(parts[1], 'ja')
-        self.assertEqual(parts[2], 'latest')
-        self.assertEqual(parts[3], 'foo.html')
+        self.assertEqual(parts.project.slug, 'sub')
+        self.assertEqual(parts.language_slug, 'ja')
+        self.assertEqual(parts.version_slug, 'latest')
+        self.assertEqual(parts.filename, 'foo.html')
 
     def test_unresolver_translation(self):
         parts = unresolve('http://pip.readthedocs.io/ja/latest/foo.html')
-        self.assertEqual(parts[0].slug, 'trans')
-        self.assertEqual(parts[1], 'ja')
-        self.assertEqual(parts[2], 'latest')
-        self.assertEqual(parts[3], 'foo.html')
+        self.assertEqual(parts.project.slug, 'trans')
+        self.assertEqual(parts.language_slug, 'ja')
+        self.assertEqual(parts.version_slug, 'latest')
+        self.assertEqual(parts.filename, 'foo.html')
 
     def test_unresolver_domain(self):
         self.domain = fixture.get(
@@ -45,42 +45,42 @@ class UnResolverTests(ResolverBase):
             canonical=True,
         )
         parts = unresolve('http://docs.foobar.com/en/latest/')
-        self.assertEqual(parts[0].slug, 'pip')
-        self.assertEqual(parts[1], 'en')
-        self.assertEqual(parts[2], 'latest')
-        self.assertEqual(parts[3], '')
+        self.assertEqual(parts.project.slug, 'pip')
+        self.assertEqual(parts.language_slug, 'en')
+        self.assertEqual(parts.version_slug, 'latest')
+        self.assertEqual(parts.filename, '')
 
     def test_unresolver_single_version(self):
         self.pip.single_version = True
         parts = unresolve('http://pip.readthedocs.io/')
-        self.assertEqual(parts[0].slug, 'pip')
-        self.assertEqual(parts[1], None)
-        self.assertEqual(parts[2], None)
-        self.assertEqual(parts[3], '')
+        self.assertEqual(parts.project.slug, 'pip')
+        self.assertEqual(parts.language_slug, None)
+        self.assertEqual(parts.version_slug, None)
+        self.assertEqual(parts.filename, '')
 
     def test_unresolver_subproject_alias(self):
         relation = self.pip.subprojects.first()
         relation.alias = 'sub_alias'
         relation.save()
         parts = unresolve('http://pip.readthedocs.io/projects/sub_alias/ja/latest/')
-        self.assertEqual(parts[0].slug, 'sub')
-        self.assertEqual(parts[1], 'ja')
-        self.assertEqual(parts[2], 'latest')
-        self.assertEqual(parts[3], '')
+        self.assertEqual(parts.project.slug, 'sub')
+        self.assertEqual(parts.language_slug, 'ja')
+        self.assertEqual(parts.version_slug, 'latest')
+        self.assertEqual(parts.filename, '')
 
     def test_unresolver_external_version(self):
         ver = self.pip.versions.first()
         ver.type = 'external'
         ver.slug = '10'
         parts = unresolve('http://pip--10.dev.readthedocs.build/en/10/')
-        self.assertEqual(parts[0].slug, 'pip')
-        self.assertEqual(parts[1], 'en')
-        self.assertEqual(parts[2], '10')
-        self.assertEqual(parts[3], '')
+        self.assertEqual(parts.project.slug, 'pip')
+        self.assertEqual(parts.language_slug, 'en')
+        self.assertEqual(parts.version_slug, '10')
+        self.assertEqual(parts.filename, '')
 
     def test_unresolver_unknown_host(self):
         parts = unresolve('http://random.stuff.com/en/latest/')
-        self.assertEqual(parts[0], None)
-        self.assertEqual(parts[1], None)
-        self.assertEqual(parts[2], None)
-        self.assertEqual(parts[3], None)
+        self.assertEqual(parts.project, None)
+        self.assertEqual(parts.language_slug, None)
+        self.assertEqual(parts.version_slug, None)
+        self.assertEqual(parts.filename, None)
